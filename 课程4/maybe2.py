@@ -36,21 +36,21 @@ if clientID!=-1:
     synchronous = True # 设置为True以启用同步模式  
     sim.simxSynchronous(clientID, synchronous)
 
-    sensorName = 'BubbleRob_sensingNose_zjw'  # 传感器名称  
+    sensorName = 'BubbleRob_sensingNose'  # 传感器名称  
     error, sensorHandle = sim.simxGetObjectHandle(clientID, sensorName, sim.simx_opmode_blocking)  
     if error != sim.simx_return_ok:  
         print(f'Failed to get handle for sensor {sensorName}')  
         sim.simxFinish(clientID)  
         sys.exit(1)  # 退出程序
 
-    jointName1 = 'BubbleRob_leftMotor_zjw'  # 关节名称
+    jointName1 = 'BubbleRob_leftMotor'  # 关节名称
     error1, left_jointHandle = sim.simxGetObjectHandle(clientID, jointName1, sim.simx_opmode_blocking) 
     if error1 != sim.simx_return_ok:  
         print(f'Failed to get handle for sensor {jointName1}')  
         sim.simxFinish(clientID)  
         sys.exit(1)  # 退出程序
 
-    jointName2 = 'BubbleRob_rightMotor_zjw'
+    jointName2 = 'BubbleRob_rightMotor'
     error2, right_jointHandle = sim.simxGetObjectHandle(clientID, jointName2, sim.simx_opmode_blocking) 
     if error2 != sim.simx_return_ok:  
         print(f'Failed to get handle for sensor {jointName2}')  
