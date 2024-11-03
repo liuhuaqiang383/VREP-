@@ -64,10 +64,10 @@ if clientID != -1:
     sim.simxSynchronous(clientID, True)
     sim.simxStartSimulation(clientID, sim.simx_opmode_blocking)
 
-    res, camera_handle = sim.simxGetObjectHandle(clientID, "top_view_camera_zjw", sim.simx_opmode_oneshot_wait)
-    res, leftMotor = sim.simxGetObjectHandle(clientID, "BubbleRob_leftMotor_zjw", sim.simx_opmode_blocking)
-    res, rightMotor = sim.simxGetObjectHandle(clientID, "BubbleRob_rightMotor_zjw", sim.simx_opmode_blocking)
-    res, noseSensor = sim.simxGetObjectHandle(clientID, "BubbleRob_sensingNose_zjw", sim.simx_opmode_blocking)
+    res, camera_handle = sim.simxGetObjectHandle(clientID, "top_view_camera", sim.simx_opmode_oneshot_wait)
+    res, leftMotor = sim.simxGetObjectHandle(clientID, "BubbleRob_leftMotor", sim.simx_opmode_blocking)
+    res, rightMotor = sim.simxGetObjectHandle(clientID, "BubbleRob_rightMotor", sim.simx_opmode_blocking)
+    res, noseSensor = sim.simxGetObjectHandle(clientID, "BubbleRob_sensingNose", sim.simx_opmode_blocking)
 
     minMaxSpeed = [50 * math.pi / 180, 300 * math.pi / 180]
     #speed = (minMaxSpeed[0] + minMaxSpeed[1]) * 0.6
