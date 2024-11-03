@@ -1,0 +1,128 @@
+try:
+    import sim
+except:
+    print ('--------------------------------------------------------------')
+    print ('"sim.py" could not be imported. This means very probably that')
+    print ('either "sim.py" or the remoteApi library could not be found.')
+    print ('Make sure both are in the same folder as this file,')
+    print ('or appropriately adjust the file "sim.py"')
+    print ('--------------------------------------------------------------')
+    print ('')
+
+import sys
+import math
+import time
+
+# Initialize variables
+detected_wall_time = backward_start_time = -1
+backward_end_time = turning_start_time = -1
+turning_end_time = straight_start_time = -1
+straight_end_time = reset_direction_time = -1
+reset_direction_end_time = -1
+current_time = -1
+
+print('Program started')
+sim.simxFinish(-1)  # Close any existing connections
+
+clientID = sim.simxStart('127.0.0.1', 19997, True, True, 5000, 5)  # Connect to CoppeliaSim
+
+if clientID != -1:
+    print('Connected to remote API server')
+
+    synchronous = True  
+    sim.simxSynchronous(clientID, synchronous)
+
+    sensorName = 'BubbleRob_sensingNose_zjw'
+    error, sensorHandle = sim.simxGetObjectHandle(clientID, sensorName, sim.simx_opmode_blocking)
+    if error != sim.simx_return_ok:
+        print(f'Failed to get handle for sensor {sensorName}')
+        sim.simxFinish(clientID)
+        sys.exit(1)
+
+    jointName1 = 'BubbleRob_leftMotor_zjw'
+    error1, left_jointHandle = sim.simxGetObjectHandle(clientID, jointName1, sim.simx_opmode_blocking)
+    if error1 != sim.simx_return_ok:
+        print(f'Failed to get handle for joint {jointName1}')
+        sim.simxFinish(clientID)
+        sys.exit(1)
+
+    jointName2 = 'BubbleRob_rightMotor_zjw'
+    error2, right_jointHandle = sim.simxGetObjectHandle(clientID, jointName2, sim.simx_opmode_blocking)
+    if error2 != sim.simx_return_ok:
+        print(f'Failed to get handle for joint {jointName2}')
+        sim.simxFinish(clientID)
+        sys.exit(1)
+
+    before_runtimes = time.time()
+    sim.simxStartSimulation(clientID, sim.simx_opmode_blocking)
+    start_simulation_time = sim.simxGetLastCmdTime(clientID)  
+
+    targetVelocity = 175/180 * math.pi
+
+
+    while (sim.simxGetLastCmdTime(clientID) - start_simulation_time) < 60000:       
+        sim.simxSetJointTargetVelocity(clientID, left_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+        sim.simxSetJointTargetVelocity(clientID, right_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+
+        lastCmdTime = sim.simxGetLastCmdTime(clientID)
+        current_time = lastCmdTime
+
+  
+        result, detected, position, _, _ = sim.simxReadProximitySensor(clientID, sensorHandle, sim.simx_opmode_blocking)
+
+        if result == sim.simx_return_ok:
+            if detected:
+                print(f"Sensor detected an object at position: {position}")
+                
+                detected_wall_time = backward_start_time = current_time
+                
+                backward_end_time = turning_start_time = current_time + 200
+                
+                turning_end_time = straight_start_time = current_time + 5/8/targetVelocity * 4 * math.pi * 1000 + 270
+                
+                straight_end_time = reset_direction_time = current_time + 5/8/targetVelocity * 4 * math.pi * 1000 + 200 + 0.5/(0.08*math.pi*targetVelocity) * 4 * math.pi * 1000
+                
+                reset_direction_end_time = current_time + 10/8/targetVelocity * 4 * math.pi * 1000 + 200 + 0.5/(0.08*math.pi*targetVelocity) * 4 * math.pi * 1000
+                
+        
+
+        if current_time >= detected_wall_time and current_time >= backward_end_time and current_time >= turning_end_time and current_time >= straight_end_time and current_time >= reset_direction_end_time:
+            
+            sim.simxSetJointTargetVelocity(clientID, left_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+            sim.simxSetJointTargetVelocity(clientID, right_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+
+        elif backward_end_time >= current_time:
+           
+            sim.simxSetJointTargetVelocity(clientID, left_jointHandle, -targetVelocity, sim.simx_opmode_blocking)
+            sim.simxSetJointTargetVelocity(clientID, right_jointHandle, -targetVelocity, sim.simx_opmode_blocking)
+
+        elif turning_end_time >= current_time:
+            
+            sim.simxSetJointTargetVelocity(clientID, left_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+            sim.simxSetJointTargetVelocity(clientID, right_jointHandle, 0, sim.simx_opmode_blocking)
+
+        elif straight_end_time >= current_time:
+            
+            sim.simxSetJointTargetVelocity(clientID, left_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+            sim.simxSetJointTargetVelocity(clientID, right_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+
+        elif reset_direction_end_time >= current_time:
+            
+            sim.simxSetJointTargetVelocity(clientID, left_jointHandle, 0, sim.simx_opmode_blocking)
+            sim.simxSetJointTargetVelocity(clientID, right_jointHandle, targetVelocity, sim.simx_opmode_blocking)
+
+        sim.simxSynchronousTrigger(clientID)
+
+    # Stop the simulation after 60 seconds
+    sim.simxStopSimulation(clientID, sim.simx_opmode_blocking)
+    sim.simxFinish(clientID)
+
+    after_runtime = time.time()
+
+    print('Program ended')
+    print('Simulation ran for 60 seconds')
+else:
+    print('Failed connecting to remote API server')
+
+
+print('while循环持续了', after_runtime-before_runtimes)
