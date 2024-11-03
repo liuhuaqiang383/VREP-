@@ -32,21 +32,21 @@ if clientID != -1:
     synchronous = True  
     sim.simxSynchronous(clientID, synchronous)
 
-    sensorName = 'BubbleRob_sensingNose_zjw'
+    sensorName = 'BubbleRob_sensingNose'
     error, sensorHandle = sim.simxGetObjectHandle(clientID, sensorName, sim.simx_opmode_blocking)
     if error != sim.simx_return_ok:
         print(f'Failed to get handle for sensor {sensorName}')
         sim.simxFinish(clientID)
         sys.exit(1)
 
-    jointName1 = 'BubbleRob_leftMotor_zjw'
+    jointName1 = 'BubbleRob_leftMotor'
     error1, left_jointHandle = sim.simxGetObjectHandle(clientID, jointName1, sim.simx_opmode_blocking)
     if error1 != sim.simx_return_ok:
         print(f'Failed to get handle for joint {jointName1}')
         sim.simxFinish(clientID)
         sys.exit(1)
 
-    jointName2 = 'BubbleRob_rightMotor_zjw'
+    jointName2 = 'BubbleRob_rightMotor'
     error2, right_jointHandle = sim.simxGetObjectHandle(clientID, jointName2, sim.simx_opmode_blocking)
     if error2 != sim.simx_return_ok:
         print(f'Failed to get handle for joint {jointName2}')
