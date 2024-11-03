@@ -33,8 +33,8 @@ if clientID != -1:
 
     # Handle Initialization
     err, camera_handle = sim.simxGetObjectHandle(clientID, 'top_view_camera', sim.simx_opmode_blocking)
-    err, leftMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_leftMotor_zjw', sim.simx_opmode_blocking)
-    err, rightMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_rightMotor_zjw', sim.simx_opmode_blocking)
+    err, leftMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_leftMotor', sim.simx_opmode_blocking)
+    err, rightMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_rightMotor', sim.simx_opmode_blocking)
 
     # Start the simulation
     sim.simxStartSimulation(clientID, sim.simx_opmode_blocking)
