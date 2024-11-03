@@ -183,16 +183,16 @@ if clientID != -1:
     # start the simulation:
     sim.simxStartSimulation(clientID, sim.simx_opmode_blocking)
 
-    res, camera0_handle = sim.simxGetObjectHandle(clientID, 'top_view_camera_zjw', sim.simx_opmode_oneshot_wait)
+    res, camera0_handle = sim.simxGetObjectHandle(clientID, 'top_view_camera', sim.simx_opmode_oneshot_wait)
     if res != sim.simx_return_ok:
         print("Failed to get top_view_camera handle")
-    res, bubbleRobBase = sim.simxGetObjectHandle(clientID, 'BubbleRob_zjw', sim.simx_opmode_blocking)
+    res, bubbleRobBase = sim.simxGetObjectHandle(clientID, 'bubbleRob', sim.simx_opmode_blocking)
     if res != sim.simx_return_ok:
         print("Failed to get object handle")
-    res, leftMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_leftMotor_zjw', sim.simx_opmode_blocking)
+    res, leftMotor = sim.simxGetObjectHandle(clientID, 'bubbleRob_leftMotor', sim.simx_opmode_blocking)
     if res != sim.simx_return_ok:
         print("Failed to get object handle")
-    res, rightMotor = sim.simxGetObjectHandle(clientID, 'BubbleRob_rightMotor_zjw', sim.simx_opmode_blocking)
+    res, rightMotor = sim.simxGetObjectHandle(clientID, 'bubbleRob_rightMotor', sim.simx_opmode_blocking)
     if res != sim.simx_return_ok:
         print("Failed to get object handle")
 
